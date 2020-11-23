@@ -43,3 +43,5 @@ $router->get("/api/participants/sweepstake/{idSweepstake}", "ParticipantsControl
 
 $router->post("/api/sweepstake-result", "SweepstakeResultController@store");
 $router->get("/api/sweepstake-result/sweepstake/{idSweepstake}", "SweepstakeResultController@getAllForSweepstake");
+
+$router->post("/api/awards_sweepstake", "AwardsSweepstakeController@store");
