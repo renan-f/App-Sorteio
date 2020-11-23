@@ -21,7 +21,8 @@ class SweepstakeResultRepositoryEloquent implements SweepstakeResultRepositoryIn
 
         return $sweepstakeresult = $this->model
             ->join('awards_sweepstakes', 'sweepstake_result.award_sweepstake_id', '=', 'awards_sweepstakes.id')
-            ->where('sweepstakes_id', '=', $idSweepstake)
+            ->join('participants', 'sweepstake_result.participant_id', '=', 'participants.id')
+            ->where('awards_sweepstakes.sweepstakes_id', '=', $idSweepstake)
             ->where('sweepstake_result.active', '=', 1)
             ->get();
     }

@@ -68,8 +68,5 @@ class AwardsRepositoryEloquent implements AwardsRepositoryInterface
             ->get();
 
         return count($awards) > 0 ? ["result" => $awards[0]->update(["active" => 0])] : ["result" => false];
-
-        /*
-        count($user) > 0 ? $user[0]->delete() : false;*/
     }
 }

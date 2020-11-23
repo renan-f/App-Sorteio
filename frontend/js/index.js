@@ -23,7 +23,6 @@ function handleSorteios(data, dadosSorteio) {
     const awards = Array.from(data);
 
     sorteios.forEach((element) => {
-        console.log(element);
         let divpai = document.createElement('div');
         divpai.setAttribute('class', 'col s12');
 
@@ -35,45 +34,78 @@ function handleSorteios(data, dadosSorteio) {
         divpai.setAttribute('class', 'card hoverable');
 
         awards.forEach((award) => {
-            renderizaPremiosNoSorteio(award, divProduto);
-        })
+            renderizaPremiosNoSorteio(award, divProduto, element.id);
+        });
 
         let inputHiden = document.createElement('input');
         inputHiden.type = 'hidden';
+        inputHiden.setAttribute('id', `sweepstake-${element.id}`);
         inputHiden.value = element.id;
 
         divpai.appendChild(h2);
         divpai.appendChild(inputHiden);
         divpai.appendChild(divProduto);
         divSorteios.appendChild(divpai);
-        renderizaBotaoSortear(divpai);
+
+        var elems = document.querySelectorAll('.collapsible');
+        var instances = M.Collapsible.init(elems, {});
+
+        getSweepstakeResult(element.id);
     });
+
 
 }
 
 function renderizaPremiosNoSorteio(premio, pai) {
-    console.log(premio);
-    divProduto = pai;
-
+    let divProduto = pai;
     let divPai = document.createElement('div');
     divPai.setAttribute('class', 'card-stacked');
 
-    let divContent = document.createElement('div');
-    divPai.setAttribute('class', 'card-content');
+    let ulContent = document.createElement('ul');
+    ulContent.setAttribute('class', 'collapsible');
 
-    let nameAward = document.createElement('p');
-    nameAward.textContent = premio.name;
+    let li = document.createElement('li');
+    li.setAttribute('id', `${premio.award_id}-${premio.sweepstakes_id}`);
 
+    let divCollapsibleHeader = document.createElement('div');
+    divCollapsibleHeader.setAttribute('class', 'collapsible-header')
+    divCollapsibleHeader.innerHTML = `<i class="material-icons">keyboard_arrow_down</i>${premio.name}`;
+
+    let divCollapsibleBody = document.createElement('div');
+    divCollapsibleBody.setAttribute('class', 'collapsible-body');
+    renderizaBotaoSortear(divCollapsibleBody);
+
+    li.appendChild(divCollapsibleHeader);
+    li.appendChild(divCollapsibleBody);
+    ulContent.appendChild(li);
+    divPai.appendChild(ulContent);
     divProduto.appendChild(divPai);
-    divPai.appendChild(divContent);
-    divContent.appendChild(nameAward);
+
+}
+
+function renderizaGanhadorNoSorteio(dados) {
+    const results = Array.from(dados);
+    dados.forEach((result) => {
+        const li = document.getElementById(`${result.award_id}-${result.sweepstakes_id}`);
+
+        let spanResultName = document.createElement('span');
+        spanResultName.innerText = result.name;
+
+        let spanResultEmail = document.createElement('span');
+        spanResultEmail.innerText = result.email;
+
+        li.children[1].appendChild(spanResultName)
+        li.children[1].innerHTML += '<br>';
+        li.children[1].appendChild(spanResultEmail)
+        li.children[1].innerHTML += '<hr>';
+    })
+
 }
 
 function renderizaBotaoSortear(pai) {
     divProduto = pai;
 
     let divPai = document.createElement('div');
-    divPai.setAttribute('class', 'card-action');
 
     let btnSortear = document.createElement('button');
     btnSortear.setAttribute('class', 'btn waves-effect waves-light');
@@ -81,6 +113,7 @@ function renderizaBotaoSortear(pai) {
 
     divProduto.appendChild(divPai);
     divPai.appendChild(btnSortear);
+    divPai.innerHTML += '<hr> <h5>Ganhadores</h5>';
 }
 
 
@@ -114,6 +147,23 @@ function getAwardsForUserInSweepstake(dadosSorteio) {
         if (api.readyState == 4 && api.status == 200) {
             var data = JSON.parse(api.responseText);
             handleSorteios(data, dadosSorteio);
+        }
+    }
+}
+
+function getSweepstakeResult($idSweepstake) {
+    const api = new XMLHttpRequest();
+    const url = "http://localhost:8000/api/sweepstake-result/sweepstake/"
+    const param = $idSweepstake;
+    api.open("GET", `${url}${param}`, true);
+    api.setRequestHeader("Content-type", "application/json");
+
+    api.send();
+
+    api.onreadystatechange = function () {
+        if (api.readyState == 4 && api.status == 200) {
+            var data = JSON.parse(api.responseText);
+            renderizaGanhadorNoSorteio(data);
         }
     }
 }
