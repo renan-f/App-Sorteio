@@ -29,6 +29,14 @@ class AwardsController extends Controller
         return $this->awardsService->getAllForUser($idUser);
     }
 
+    public function getAwardsForUserInSweepstake($idUser)
+    {
+        return $this->awardsService->getAwardsForUserInSweepstake($idUser);
+    }
+
+
+
+
     public function store(Request $request)
     {
         return $this->awardsService->store($request);

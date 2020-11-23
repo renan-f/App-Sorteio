@@ -58,6 +58,16 @@ class AwardsService
         }
     }
 
+    public function getAwardsForUserInSweepstake($idUser)
+    {
+        try {
+            $awards = $this->awardsRepository->getAwardsForUserInSweepstake($idUser);
+            return count($awards) > 0 ? response()->json($awards, Response::HTTP_OK) : response()->json(null, Response::HTTP_OK);
+        } catch (QueryException $exception) {
+            return response()->json(['error' => 'Erro no Banco'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make(
@@ -102,7 +112,7 @@ class AwardsService
     {
         try {
             $award = $this->awardsRepository->destroy($id);
-            return response()->json(null, Response::HTTP_OK);
+            return response()->json($award, Response::HTTP_OK);
         } catch (QueryException $exception) {
             return response()->json(['error' => 'Erro no Banco'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }

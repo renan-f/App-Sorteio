@@ -37,13 +37,22 @@ class UsersService
 
     public function get($id)
     {
-
         try {
             $user = [
                 $this->usersRepository->get($id)
             ];
 
             return count($user) > 0 ? response()->json($user, Response::HTTP_OK) : response()->json(null, Response::HTTP_OK);
+        } catch (QueryException $exception) {
+            return response()->json(['error' => 'Erro no Banco'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function login(Request $request)
+    {
+        try {
+            $user = $this->usersRepository->login($request);
+            return response()->json($user, Response::HTTP_OK);
         } catch (QueryException $exception) {
             return response()->json(['error' => 'Erro no Banco'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -94,7 +103,7 @@ class UsersService
     {
         try {
             $user = $this->usersRepository->destroy($id);
-            return response()->json(null, Response::HTTP_OK);
+            return response()->json($user, Response::HTTP_OK);
         } catch (QueryException $exception) {
             return response()->json(['error' => 'Erro no Banco'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }

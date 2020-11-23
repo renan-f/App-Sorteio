@@ -1,0 +1,20 @@
+body {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    margin: auto;
+    background-color: whitesmoke;
+}
+
+
+.container {
+    margin: auto !important;
+}
+
+.card {
+    margin: auto !important;
+}
+
+#card-cadastro {
+    height: 75vh !important;
+}

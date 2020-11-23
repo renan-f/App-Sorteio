@@ -11,25 +11,27 @@ estudo
 */
 
 $router->get("/api/users", "UsersController@getAll");
-$router->group(['prefix' => "/api/user"], function () use ($router) {
+$router->group(['prefix' => "/api/user", 'Middleware' => ['CorsDomain']], function () use ($router) {
     $router->get("/{id}", "UsersController@get");
+    $router->post("/login", "UsersController@login");
     $router->post("/", "UsersController@store");
-    $router->put("/{id}", "UsersController@update");
+    $router->post("/edit/{id}", "UsersController@update");
     $router->delete("/{id}", "UsersController@destroy");
 });
 
 $router->get("/api/awards", "AwardsController@getAll");
 $router->get("/api/awards/user/{idUser}", "AwardsController@getAllForUser");
-$router->group(["prefix" => "/api/award"], function () use ($router) {
+$router->get("/api/awards/sweepstake/user/{idUser}", "AwardsController@getAwardsForUserInSweepstake");
+$router->group(["prefix" => "/api/award", 'Middleware' => ['CorsDomain']], function () use ($router) {
     $router->get("/{id}", "AwardsController@get");
     $router->post("/", "AwardsController@store");
-    $router->put("/{id}", "AwardsController@update");
+    $router->post("/{id}", "AwardsController@update");
     $router->delete("/{id}", "AwardsController@destroy");
 });
 
 $router->get("/api/sweepstakes", "SweepstakesController@getAll");
 $router->get("/api/sweepstakes/user/{idUser}", "SweepstakesController@getAllForUser");
-$router->group(["prefix" => "/api/sweepstake"], function () use ($router) {
+$router->group(["prefix" => "/api/sweepstake", 'Middleware' => ['CorsDomain']], function () use ($router) {
     $router->get("/{id}", "SweepstakesController@get");
     $router->post("/", "SweepstakesController@store");
     $router->put("/{id}", "SweepstakesController@update");

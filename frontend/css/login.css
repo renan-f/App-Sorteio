@@ -1,0 +1,22 @@
+body {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    margin: auto;
+    background-color: whitesmoke;
+}
+
+.container {
+    display: flex !important;
+}
+
+.card {
+    margin: auto !important;
+}
+#card-login {
+    height: 60vh !important;
+}
+
+#card-cadastro {
+    height: 75vh !important;
+}

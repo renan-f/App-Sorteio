@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Materialize  -->
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <!-- Materialize  -->
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="css/awards.css">
+
+    <script src="./js/awards.js"></script>
+    <script src="./js/global.js"></script>
+
+    <title>Prêmios</title>
+</head>
+
+<body>
+    <div class="navbar-fixed ">
+        <nav>
+            <div class="nav-wrapper container">
+                <a href="index.html" class="brand-App Sorteio">App Sorteio</a>
+                <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="index.html">Sorteios</a></li>
+                    <li><a href="awards.html">Prêmios</a></li>
+                    <li><a href="profile.html">Meu Perfil</a></li>
+                    <li><a id="btn-sair">Sair</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <ul class="sidenav" id="mobile-demo">
+        <li><a href="index.html">Sorteios</a></li>
+        <li><a href="awards.html">Prêmios</a></li>
+        <li><a href="profile.html">Meu Perfil</a></li>
+        <li><a id="btn-sair">Sair</a></li>
+    </ul>
+
+    <div class="container">
+        <div class="row">
+            <div class="col s12">
+                <a href="#modal1" class="btn-floating btn-large waves-effect waves-light red modal-trigger"
+                    style="margin-top: 15px;"><i class="material-icons">add</i></a>
+            </div>
+        </div>
+        <div id="div-awards" class="row">
+
+        </div>
+    </div>
+
+
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <div class="row">
+                <form class="col s12">
+                    <h4>Cadastro de Prêmio</h4>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="award-name" type="text" class="validate">
+                            <label for="award-name">Nome</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="award-image" type="text" class="validate">
+                            <label for="award-image">Caminho Da Imagem</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="modal-footer">
+                            <button id="btn-cancelar"
+                                class="modal-close waves-effect waves-green btn red">Cancelar</button>
+                            <button id="btn-salvar" class="modal-close waves-effect waves-green btn">Salvar</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <div class="row">
+                <form class="col s12">
+                    <h4>Cadastro de Prêmio</h4>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="award-edit-name" type="text" class="validate">
+                            <label for="award-edit-name">Nome</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="award-edit-image" type="text" class="validate">
+                            <label for="award-edit-image">Caminho Da Imagem</label>
+                        </div>
+                    </div>
+                    <input id="award-edit-id" type="hidden">
+                    <div class="row">
+                        <div class="modal-footer">
+                            <button id="btn-edit-cancelar"
+                                class="modal-close waves-effect waves-green btn red">Cancelar</button>
+                            <button id="btn-edit-alterar"
+                                class="modal-close waves-effect waves-green btn">Alterar</a></button>
+                            <button id="btn-edit-deletar"
+                                class="modal-close waves-effect waves-green orange btn">Excluir</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

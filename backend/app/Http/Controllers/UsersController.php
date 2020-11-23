@@ -24,6 +24,11 @@ class UsersController extends Controller
         return $this->usersService->get($id);
     }
 
+    public function login(Request $request)
+    {
+        return $this->usersService->login($request);
+    }
+
     public function store(Request $request)
     {
         return $this->usersService->store($request);
