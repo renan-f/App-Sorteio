@@ -2,3 +2,9 @@
     cursor: pointer !important;
     margin-right: 15px;
 }
+
+#div-awards{
+    overflow:auto !important; 
+    max-height: 73vh;
+}
+

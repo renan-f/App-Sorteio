@@ -4,9 +4,13 @@ if (!localStorage.getItem("id")) {
     window.addEventListener('load', start);
 }
 
+let loading;
 let btnSair;
+let btnSalvar;
+let btnCancelar;
 let divSorteios;
-
+let divModal;
+let divSelectProdutos;
 
 function start() {
     divSorteios = document.querySelector('#div-sorteios');
@@ -14,49 +18,153 @@ function start() {
     btnSair.addEventListener('click', () => {
         localStorage.clear();
         window.location.href = "login.html"
-    })
+    });
+
+    loading = document.querySelectorAll('.progress')[0];
+
+    btnCancelar = document.querySelector('#btn-cancelar');
+    btnCancelar.addEventListener('click', btnClickCancelar)
+    btnSalvar = document.querySelector('#btn-salvar');
+    btnSalvar.addEventListener('click', btnClickSalvar)
+
+    var elems = document.querySelectorAll('.modal');
+    var instances = M.Modal.init(elems, {});
+
+    divModal = document.querySelector("#modal1");
+    divSelectProdutos = document.querySelector(".div-select-produtos");
+
     getSorteios();
+    awardsForUser();
+}
+
+function controleLoading(state) {
+    state ? loading.classList.remove('none') : loading.classList.add('none');
+}
+
+function btnClickCancelar(event) {
+    event.preventDefault();
+}
+
+function btnClickSalvar(event) {
+    event.preventDefault();
+    controleLoading(true);
+    const sweepstake = {
+        "user_id": localStorage.getItem("id"),
+        "description": event.target.form[0].value
+    }
+
+    const fields = Array.from(event.target.form);
+    const awardsChecked = [];
+    fields.forEach((field) => {
+        if (field.type == "checkbox" && field.checked) {
+            awardsChecked.push(field.id);
+        }
+    });
+
+    salvarSweepstake(sweepstake, awardsChecked);
+}
+
+function generateAwards(premios) {
+    let allPremios = Array.from(premios);
+    premios.forEach((premio) => {
+        let p = document.createElement('p');
+        let label = document.createElement('label');
+        let input = document.createElement('input');
+        input.setAttribute('type', 'checkbox');
+        input.setAttribute('id', premio.id);
+        let span = document.createElement('span');
+        span.textContent = premio.name;
+
+        label.appendChild(input);
+        label.appendChild(span);
+        p.appendChild(label);
+        divSelectProdutos.appendChild(p);
+    });
 }
 
 function handleSorteios(data, dadosSorteio) {
+    controleLoading(true);
     const sorteios = Array.from(dadosSorteio);
     const awards = Array.from(data);
 
+    divSorteios.innerHTML = '';
+
     sorteios.forEach((element) => {
         let divpai = document.createElement('div');
-        divpai.setAttribute('class', 'col s12');
+        divpai.setAttribute('class', 'col s12 center-align');
 
-        let h2 = document.createElement('h2');
-        h2.setAttribute('class', 'header center-align');
-        h2.textContent = element.description;
+        let h3 = document.createElement('h3');
+        h3.setAttribute('class', 'header center-align');
+        h3.setAttribute('style', 'padding : 5px;');
+        h3.textContent = element.description;
 
         let divProduto = document.createElement('div');
         divpai.setAttribute('class', 'card hoverable');
 
-        awards.forEach((award) => {
-            renderizaPremiosNoSorteio(award, divProduto, element.id);
-        });
 
         let inputHiden = document.createElement('input');
         inputHiden.type = 'hidden';
         inputHiden.setAttribute('id', `sweepstake-${element.id}`);
         inputHiden.value = element.id;
 
-        divpai.appendChild(h2);
+        renderizaBotaoLinkSorteio(element.id, divpai);
+        divpai.appendChild(h3);
         divpai.appendChild(inputHiden);
         divpai.appendChild(divProduto);
         divSorteios.appendChild(divpai);
+
+        awards.forEach((award) => {
+            if (award.sweepstakes_id == element.id) {
+                renderizaPremiosNoSorteio(award, divProduto);
+            }
+        });
 
         var elems = document.querySelectorAll('.collapsible');
         var instances = M.Collapsible.init(elems, {});
 
         getSweepstakeResult(element.id);
+        controleLoading(false);
     });
-
-
 }
 
-function renderizaPremiosNoSorteio(premio, pai) {
+function renderizaBotaoLinkSorteio(id, div) {
+    let pai = div;
+
+    let divrow = document.createElement('div');
+    divrow.setAttribute('class', 'row');
+
+    let divinput = document.createElement('div');
+    divinput.setAttribute('class', 'input-field col s12');
+
+    let icon = document.createElement('i');
+    icon.setAttribute('class', 'material-icons prefix');
+    icon.innerText = 'content_copy';
+    icon.setAttribute('style', 'cursor: grab')
+    icon.addEventListener('click', copyClipboard);
+
+    let inputLink = document.createElement('input');
+    inputLink.setAttribute('type', 'text');
+    inputLink.setAttribute('readonly', true);
+    inputLink.setAttribute('class', 'center-align materialize-textarea');
+    inputLink.value = `http://127.0.0.1:5500/sorteios/${id}`;
+
+    divinput.appendChild(icon);
+    divinput.appendChild(inputLink);
+
+
+    divrow.appendChild(divinput);
+
+
+
+    pai.appendChild(divrow);
+}
+
+function copyClipboard(event) {
+    event.target.parentNode.children[1].select();
+    document.execCommand('copy');
+}
+
+function renderizaPremiosNoSorteio(premio, pai, sweepstake) {
     let divProduto = pai;
     let divPai = document.createElement('div');
     divPai.setAttribute('class', 'card-stacked');
@@ -80,12 +188,12 @@ function renderizaPremiosNoSorteio(premio, pai) {
     ulContent.appendChild(li);
     divPai.appendChild(ulContent);
     divProduto.appendChild(divPai);
-
 }
 
 function renderizaGanhadorNoSorteio(dados) {
     const results = Array.from(dados);
-    dados.forEach((result) => {
+    console.log(results);
+    results.forEach((result) => {
         const li = document.getElementById(`${result.award_id}-${result.sweepstakes_id}`);
 
         let spanResultName = document.createElement('span');
@@ -116,7 +224,6 @@ function renderizaBotaoSortear(pai) {
     divPai.innerHTML += '<hr> <h5>Ganhadores</h5>';
 }
 
-
 function getSorteios() {
     const api = new XMLHttpRequest();
     const url = "http://localhost:8000/api/sweepstakes/user/"
@@ -129,7 +236,12 @@ function getSorteios() {
     api.onreadystatechange = function () {
         if (api.readyState == 4 && api.status == 200) {
             var data = JSON.parse(api.responseText);
-            getAwardsForUserInSweepstake(data)
+            console.log(data)
+            if (data.length > 0) {
+                getAwardsForUserInSweepstake(data)
+            } else {
+                controleLoading(false);
+            }
         }
     }
 }
@@ -166,4 +278,66 @@ function getSweepstakeResult($idSweepstake) {
             renderizaGanhadorNoSorteio(data);
         }
     }
+}
+
+function awardsForUser() {
+    const api = new XMLHttpRequest();
+    const url = `http://localhost:8000/api/awards/user/${localStorage.getItem('id')}`;
+    api.open("GET", url, true);
+    api.setRequestHeader("Content-type", "application/json");
+    api.send();
+
+    api.onreadystatechange = function () {
+        if (api.readyState == 4 && (api.status == 200 || api.status == 201)) {
+            var data = JSON.parse(api.responseText);
+            if (data.length > 0) {
+                generateAwards(data);
+            }
+        }
+    }
+}
+
+function salvarSweepstake(sweepstake, awards) {
+    const api = new XMLHttpRequest();
+    const url = "http://localhost:8000/api/sweepstake";
+    api.open("POST", url, true);
+    api.setRequestHeader("Content-type", "application/json");
+    api.send(JSON.stringify(sweepstake));
+
+    api.onreadystatechange = function () {
+        if (api.readyState == 4 && (api.status == 200 || api.status == 201)) {
+            var data = JSON.parse(api.responseText);
+            if (data.id) {
+                sarvarAwardsSweepstake(data.id, awards);
+            }
+        }
+    }
+}
+
+function sarvarAwardsSweepstake(idSweepstake, awards) {
+    const awardsSweepstake = [];
+    Array.from(awards).forEach((award) => {
+        awardsSweepstake.push({
+            'award_id': award,
+            'sweepstakes_id': idSweepstake
+        });
+    });
+
+    console.log(awardsSweepstake)
+    const api = new XMLHttpRequest();
+    const url = "http://localhost:8000/api/awards_sweepstake";
+    api.open("POST", url, true);
+    api.setRequestHeader("Content-type", "application/json");
+
+    awardsSweepstake.forEach((award) => {
+        api.send(JSON.stringify(award));
+        api.onreadystatechange = function () {
+            if (api.readyState == 4 && (api.status == 200 || api.status == 201)) {
+                var data = JSON.parse(api.responseText);
+                if (data.id) {
+                    getSorteios();
+                }
+            }
+        }
+    })
 }

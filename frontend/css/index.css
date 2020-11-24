@@ -1,0 +1,19 @@
+#div-sorteios{
+    overflow-y:scroll !important; 
+    max-height: 73vh;
+    max-width: 75vw;
+}
+
+.card {
+    max-width: 700px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.row {
+    margin-bottom: 0px !important;
+}
+
+h3 {
+    margin: 2px;
+}

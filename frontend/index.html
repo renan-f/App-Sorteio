@@ -13,6 +13,9 @@
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
+    <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/index.css">
+
     <script src="./js/index.js"></script>
     <script src="./js/global.js"></script>
 
@@ -42,16 +45,53 @@
         <li><a id="btn-sair">Sair</a></li>
     </ul>
 
+    <div class="progress">
+        <div class="indeterminate"></div>
+    </div>
+
     <div class="container">
         <div class="row">
             <div class="col s12">
-                <a class="btn-floating btn-large waves-effect waves-light red" style="margin-top: 15px;"><i
-                        class="material-icons">add</i></a>
+                <a href="#modal1" class="btn-floating btn-large waves-effect waves-light red modal-trigger"
+                    style="margin-top: 15px;"><i class="material-icons">add</i></a>
             </div>
         </div>
         <div id="div-sorteios" class="row">
+
         </div>
     </div>
+
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <div class="row">
+                <form class="col s12">
+                    <h4>Cadastro de Sorteio</h4>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="award-name" type="text" class="validate" required minlength="5">
+                            <label for="award-name">Descrição</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <h5>Prêmios</h5>
+                        <div class="div-select-produtos">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="modal-footer">
+                            <button id="btn-cancelar" class="modal-close waves-effect waves-green btn orange">Cancelar
+                            </button>
+                            <button id="btn-salvar" type="submit"
+                                class="modal-close waves-effect waves-green btn">Salvar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>

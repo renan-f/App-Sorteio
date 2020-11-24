@@ -1,3 +1,7 @@
 .none {
     display: none !important;
 }
+
+body {
+    background-color: whitesmoke;
+}
