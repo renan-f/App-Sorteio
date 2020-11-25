@@ -40,7 +40,7 @@ class SortearService
                 $indexGanhador = rand(0, count($participants) - 1);
 
                 $ganhador = [
-                    "award_sweepstake_id" => $award_sweepstake[0]->sweepstakes_id,
+                    "award_sweepstake_id" => $award_sweepstake[0]->id,
                     "participant_id" => $participants[$indexGanhador]->id
                 ];
 

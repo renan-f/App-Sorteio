@@ -68,7 +68,10 @@ function btnClickSalvar(event) {
 
 function clickBtnSortear(event) {
     const idcomposto = event.target.parentNode.parentNode.parentNode.getAttribute('id');
-    console.log(idcomposto);
+    const splitId = idcomposto.split('-');
+    const award_id = splitId[0];
+    const sweepstake_id = splitId[1];
+    salvarResultAwardSweepstake(sweepstake_id, award_id);
 }
 
 function handleSorteios(dadosSorteio) {
@@ -131,7 +134,7 @@ function renderizaBotaoLinkSorteio(id, div) {
     inputLink.setAttribute('type', 'text');
     inputLink.setAttribute('readonly', true);
     inputLink.setAttribute('class', 'center-align materialize-textarea');
-    inputLink.value = `http://127.0.0.1:5500/sorteios/${id}`;
+    inputLink.value = `http://127.0.0.1:5500/sorteios.html?id=${id}`;
 
     divinput.appendChild(icon);
     divinput.appendChild(inputLink);
@@ -313,3 +316,26 @@ function sarvarAwardsSweepstake(idSweepstake, awards) {
     getSorteios()
 }
 
+function salvarResultAwardSweepstake(idSweepstake, idAward) {
+    const sorteio = {
+        'sweepstakes_id': idSweepstake,
+        'award_id': idAward
+    }
+
+    const url = "http://localhost:8000/api/sortear";
+
+    const api = new XMLHttpRequest();
+    api.open("POST", url, true);
+    api.setRequestHeader("Content-type", "application/json");
+    console.log(sorteio)
+    api.send(JSON.stringify(sorteio));
+    api.onreadystatechange = function () {
+        if (api.readyState == 4 && (api.status == 200 || api.status == 201)) {
+            var data = JSON.parse(api.responseText);
+            if (data.id) {
+                getSorteios();
+                awardsForUser();
+            }
+        }
+    }
+}
