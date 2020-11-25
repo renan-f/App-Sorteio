@@ -82,47 +82,43 @@ function generateAwards(premios) {
     });
 }
 
-function handleSorteios(data, dadosSorteio) {
+function handleSorteios(dadosSorteio) {
     controleLoading(true);
     const sorteios = Array.from(dadosSorteio);
-    const awards = Array.from(data);
 
     divSorteios.innerHTML = '';
-
-    sorteios.forEach((element) => {
+    sorteios.forEach((sorteio) => {
         let divpai = document.createElement('div');
         divpai.setAttribute('class', 'col s12 center-align');
 
         let h3 = document.createElement('h3');
         h3.setAttribute('class', 'header center-align');
         h3.setAttribute('style', 'padding : 5px;');
-        h3.textContent = element.description;
+        h3.textContent = sorteio.description;
 
         let divProduto = document.createElement('div');
         divpai.setAttribute('class', 'card hoverable');
 
-
         let inputHiden = document.createElement('input');
         inputHiden.type = 'hidden';
-        inputHiden.setAttribute('id', `sweepstake-${element.id}`);
-        inputHiden.value = element.id;
+        inputHiden.setAttribute('id', `sweepstake-${sorteio.id}`);
+        inputHiden.value = sorteio.id;
 
-        renderizaBotaoLinkSorteio(element.id, divpai);
+        renderizaBotaoLinkSorteio(sorteio.id, divpai);
         divpai.appendChild(h3);
         divpai.appendChild(inputHiden);
         divpai.appendChild(divProduto);
         divSorteios.appendChild(divpai);
 
+        const { awards } = sorteio;
         awards.forEach((award) => {
-            if (award.sweepstakes_id == element.id) {
-                renderizaPremiosNoSorteio(award, divProduto);
-            }
+            renderizaPremiosNoSorteio(award, divProduto);
+            const { results } = award;
+            renderizaGanhadorNoSorteio(results);
         });
 
         var elems = document.querySelectorAll('.collapsible');
         var instances = M.Collapsible.init(elems, {});
-
-        getSweepstakeResult(element.id);
         controleLoading(false);
     });
 }
@@ -164,7 +160,7 @@ function copyClipboard(event) {
     document.execCommand('copy');
 }
 
-function renderizaPremiosNoSorteio(premio, pai, sweepstake) {
+function renderizaPremiosNoSorteio(premio, pai) {
     let divProduto = pai;
     let divPai = document.createElement('div');
     divPai.setAttribute('class', 'card-stacked');
@@ -190,9 +186,8 @@ function renderizaPremiosNoSorteio(premio, pai, sweepstake) {
     divProduto.appendChild(divPai);
 }
 
-function renderizaGanhadorNoSorteio(dados) {
-    const results = Array.from(dados);
-    console.log(results);
+function renderizaGanhadorNoSorteio(sorteados) {
+    const results = Array.from(sorteados);
     results.forEach((result) => {
         const li = document.getElementById(`${result.award_id}-${result.sweepstakes_id}`);
 
@@ -207,7 +202,6 @@ function renderizaGanhadorNoSorteio(dados) {
         li.children[1].appendChild(spanResultEmail)
         li.children[1].innerHTML += '<hr>';
     })
-
 }
 
 function renderizaBotaoSortear(pai) {
@@ -236,46 +230,11 @@ function getSorteios() {
     api.onreadystatechange = function () {
         if (api.readyState == 4 && api.status == 200) {
             var data = JSON.parse(api.responseText);
-            console.log(data)
             if (data.length > 0) {
-                getAwardsForUserInSweepstake(data)
+                handleSorteios(data);
             } else {
                 controleLoading(false);
             }
-        }
-    }
-}
-
-function getAwardsForUserInSweepstake(dadosSorteio) {
-    const api = new XMLHttpRequest();
-    const url = "http://localhost:8000/api/awards/sweepstake/user/"
-    const param = localStorage.getItem("id");
-    api.open("GET", `${url}${param}`, true);
-    api.setRequestHeader("Content-type", "application/json");
-
-    api.send();
-
-    api.onreadystatechange = function () {
-        if (api.readyState == 4 && api.status == 200) {
-            var data = JSON.parse(api.responseText);
-            handleSorteios(data, dadosSorteio);
-        }
-    }
-}
-
-function getSweepstakeResult($idSweepstake) {
-    const api = new XMLHttpRequest();
-    const url = "http://localhost:8000/api/sweepstake-result/sweepstake/"
-    const param = $idSweepstake;
-    api.open("GET", `${url}${param}`, true);
-    api.setRequestHeader("Content-type", "application/json");
-
-    api.send();
-
-    api.onreadystatechange = function () {
-        if (api.readyState == 4 && api.status == 200) {
-            var data = JSON.parse(api.responseText);
-            renderizaGanhadorNoSorteio(data);
         }
     }
 }
@@ -323,7 +282,6 @@ function sarvarAwardsSweepstake(idSweepstake, awards) {
         });
     });
 
-    console.log(awardsSweepstake)
     const api = new XMLHttpRequest();
     const url = "http://localhost:8000/api/awards_sweepstake";
     api.open("POST", url, true);
