@@ -19,5 +19,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('App\Repositories\ParticipantsRepositoryInterface', 'App\Repositories\ParticipantsRepositoryEloquent');
         $this->app->bind('App\Repositories\SweepstakeResultRepositoryInterface', 'App\Repositories\SweepstakeResultRepositoryEloquent');
         $this->app->bind('App\Repositories\AwardsSweepstakeRepositoryInterface', 'App\Repositories\AwardsSweepstakeRepositoryEloquent');
+        $this->app->bind('App\Repositories\SortearRepositoryInterface', 'App\Repositories\SortearRepositoryEloquent');
     }
 }

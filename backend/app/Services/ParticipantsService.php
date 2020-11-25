@@ -34,7 +34,6 @@ class ParticipantsService
 
     public function getAllForSweepstake($idSweepstake)
     {
-
         try {
             $participants = $this->participantsRepository->getAllForSweepstake($idSweepstake);
             return count($participants) > 0 ? response()->json($participants, Response::HTTP_OK) : response()->json(null, Response::HTTP_OK);

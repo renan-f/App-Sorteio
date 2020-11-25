@@ -6,9 +6,6 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-/*
-estudo
-*/
 
 $router->get("/api/users", "UsersController@getAll");
 $router->group(['prefix' => "/api/user", 'Middleware' => ['CorsDomain']], function () use ($router) {
@@ -45,3 +42,5 @@ $router->post("/api/sweepstake-result", "SweepstakeResultController@store");
 $router->get("/api/sweepstake-result/sweepstake/{idSweepstake}", "SweepstakeResultController@getAllForSweepstake");
 
 $router->post("/api/awards_sweepstake", "AwardsSweepstakeController@store");
+
+$router->post("/api/sortear", "SortearController@getAllForSweepstakeAndAward");
