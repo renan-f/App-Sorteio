@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Repositories\AwardsRepositoryInterface;
 use Illuminate\Http\Request;
 use App\Models\Awards;
+use App\Models\SweepstakeResult;
 
 
 class AwardsRepositoryEloquent implements AwardsRepositoryInterface
@@ -18,7 +19,6 @@ class AwardsRepositoryEloquent implements AwardsRepositoryInterface
 
     public function getAll()
     {
-        // return $users = $this->model->all();
         return $awards = $this->model->where('active', '=', 1)->get();
     }
 
@@ -41,9 +41,6 @@ class AwardsRepositoryEloquent implements AwardsRepositoryInterface
             ->where('awards_sweepstakes.active', '=', 1)
             ->get();
     }
-
-
-
 
     public function store(Request $request)
     {

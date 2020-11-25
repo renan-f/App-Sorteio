@@ -13,6 +13,7 @@ class SweepstakesController extends Controller
     {
         $this->sweepstakesService = $sweepstakesService;
     }
+
     public function getAll()
     {
         return $this->sweepstakesService->getAll();
