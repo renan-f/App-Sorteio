@@ -58,6 +58,8 @@ function clickBtnSalvar(event) {
         "image": inputImageAward.value
     }
     salvar(dados);
+    const fields = Array.from(event.target.form);
+    clearFields(fields);
 }
 
 function clickBtnAlterar(event) {

@@ -9,6 +9,7 @@ let btnSair;
 let btnSalvar;
 let btnCancelar;
 let divSorteios;
+let btnNovo;
 let divModal;
 let divSelectProdutos;
 
@@ -25,7 +26,8 @@ function start() {
     btnCancelar = document.querySelector('#btn-cancelar');
     btnCancelar.addEventListener('click', btnClickCancelar)
     btnSalvar = document.querySelector('#btn-salvar');
-    btnSalvar.addEventListener('click', btnClickSalvar)
+    btnSalvar.addEventListener('click', btnClickSalvar);
+    btnNovo = document.querySelectorAll('.modal-trigger')[0];
 
     var elems = document.querySelectorAll('.modal');
     var instances = M.Modal.init(elems, {});
@@ -60,26 +62,8 @@ function btnClickSalvar(event) {
             awardsChecked.push(field.id);
         }
     });
-
     salvarSweepstake(sweepstake, awardsChecked);
-}
-
-function generateAwards(premios) {
-    let allPremios = Array.from(premios);
-    premios.forEach((premio) => {
-        let p = document.createElement('p');
-        let label = document.createElement('label');
-        let input = document.createElement('input');
-        input.setAttribute('type', 'checkbox');
-        input.setAttribute('id', premio.id);
-        let span = document.createElement('span');
-        span.textContent = premio.name;
-
-        label.appendChild(input);
-        label.appendChild(span);
-        p.appendChild(label);
-        divSelectProdutos.appendChild(p);
-    });
+    clearFields(fields);
 }
 
 function handleSorteios(dadosSorteio) {
@@ -105,6 +89,7 @@ function handleSorteios(dadosSorteio) {
         inputHiden.value = sorteio.id;
 
         renderizaBotaoLinkSorteio(sorteio.id, divpai);
+
         divpai.appendChild(h3);
         divpai.appendChild(inputHiden);
         divpai.appendChild(divProduto);
@@ -119,7 +104,6 @@ function handleSorteios(dadosSorteio) {
 
         var elems = document.querySelectorAll('.collapsible');
         var instances = M.Collapsible.init(elems, {});
-        controleLoading(false);
     });
 }
 
@@ -201,7 +185,8 @@ function renderizaGanhadorNoSorteio(sorteados) {
         li.children[1].innerHTML += '<br>';
         li.children[1].appendChild(spanResultEmail)
         li.children[1].innerHTML += '<hr>';
-    })
+    });
+    controleLoading(false);
 }
 
 function renderizaBotaoSortear(pai) {
@@ -216,6 +201,24 @@ function renderizaBotaoSortear(pai) {
     divProduto.appendChild(divPai);
     divPai.appendChild(btnSortear);
     divPai.innerHTML += '<hr> <h5>Ganhadores</h5>';
+}
+
+function generateAwards(premios) {
+    const allPremios = Array.from(premios);
+    allPremios.forEach((premio) => {
+        let p = document.createElement('p');
+        let label = document.createElement('label');
+        let input = document.createElement('input');
+        input.setAttribute('type', 'checkbox');
+        input.setAttribute('id', premio.id);
+        let span = document.createElement('span');
+        span.textContent = premio.name;
+
+        label.appendChild(input);
+        label.appendChild(span);
+        p.appendChild(label);
+        divSelectProdutos.appendChild(p);
+    });
 }
 
 function getSorteios() {
@@ -282,20 +285,24 @@ function sarvarAwardsSweepstake(idSweepstake, awards) {
         });
     });
 
-    const api = new XMLHttpRequest();
     const url = "http://localhost:8000/api/awards_sweepstake";
-    api.open("POST", url, true);
-    api.setRequestHeader("Content-type", "application/json");
 
-    awardsSweepstake.forEach((award) => {
-        api.send(JSON.stringify(award));
+    let retorno = false;
+    for (let i = 0; i < awardsSweepstake.length; i++) {
+        const api = new XMLHttpRequest();
+        api.open("POST", url, true);
+        api.setRequestHeader("Content-type", "application/json");
+        api.send(JSON.stringify(awardsSweepstake[i]));
         api.onreadystatechange = function () {
             if (api.readyState == 4 && (api.status == 200 || api.status == 201)) {
                 var data = JSON.parse(api.responseText);
-                if (data.id) {
-                    getSorteios();
+                if (i == awardsSweepstake.length - 1) {
+                    retorno = true;
                 }
             }
         }
-    })
+    }
+
+    getSorteios()
 }
+
