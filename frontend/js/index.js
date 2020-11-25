@@ -66,6 +66,11 @@ function btnClickSalvar(event) {
     clearFields(fields);
 }
 
+function clickBtnSortear(event) {
+    const idcomposto = event.target.parentNode.parentNode.parentNode.getAttribute('id');
+    console.log(idcomposto);
+}
+
 function handleSorteios(dadosSorteio) {
     controleLoading(true);
     const sorteios = Array.from(dadosSorteio);
@@ -172,6 +177,7 @@ function renderizaPremiosNoSorteio(premio, pai) {
 
 function renderizaGanhadorNoSorteio(sorteados) {
     const results = Array.from(sorteados);
+
     results.forEach((result) => {
         const li = document.getElementById(`${result.award_id}-${result.sweepstakes_id}`);
 
@@ -186,17 +192,18 @@ function renderizaGanhadorNoSorteio(sorteados) {
         li.children[1].appendChild(spanResultEmail)
         li.children[1].innerHTML += '<hr>';
     });
+
     controleLoading(false);
 }
 
 function renderizaBotaoSortear(pai) {
     divProduto = pai;
-
     let divPai = document.createElement('div');
 
     let btnSortear = document.createElement('button');
     btnSortear.setAttribute('class', 'btn waves-effect waves-light');
     btnSortear.textContent = "Sortear";
+    btnSortear.setAttribute('onclick', 'clickBtnSortear(event)');
 
     divProduto.appendChild(divPai);
     divPai.appendChild(btnSortear);
